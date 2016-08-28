@@ -1,7 +1,5 @@
 $(document).ready(function ()
-{
-    $("#hot").bind("contextmenu", function(e) { return false; });
-    
+{    
     var tick = 0.10;
     
     var cols = ["Price", "Date", "1D Chg", "YTD Chg", "Vol BTC"];
@@ -20,14 +18,37 @@ $(document).ready(function ()
             return;
         
         // left or right click: adding or subtracting a tick.
-        var adj = event.which == 1 ? tick : -tick;
-        adjustments[row][col] += adj;
+        var adj = adjustments[row][col] + (event.which == 1 ? tick : -tick);
+        adj = Math.round(adj * 100) / 100;
         
-        console.log(adj);
+        adjustments[row][col] = adj;
+        hot.setDataAtCell(row, col, adj);
+    };
+    
+    var adjRenderer = function(instance, td, row, col, prop, value, cellProperties) 
+    {
+        while (td.firstChild)
+            td.removeChild(td.firstChild);
+
+        var adjustment = adjustments[row][col];
+        var adjValue = Math.round((rawValues[row][col] + adjustment) * 100) / 100;
+        td.appendChild(document.createTextNode(adjValue));
+        
+        if (adjustment != 0.0)
+        {
+            var sign = adjustment > 0.0 ? "+" : "";
+            var text = document.createTextNode(" (" + sign + adjustment + ")");
+            
+            var adjElem = document.createElement("span");
+            adjElem.setAttribute("class", adjustment > 0.0 ? "text-success" : "text-danger");
+            adjElem.appendChild(text);
+            
+            td.appendChild(adjElem);
+        }
     };
 
     var hot = new Handsontable(document.getElementById("hot"), {
-        data: rawValues,
+        data: adjustments,
         colHeaders: cols,
         rowHeaders: true,
         sortIndicator: false,
@@ -37,9 +58,13 @@ $(document).ready(function ()
         columns: [
         {type: 'numeric', format: '$0,0.00'},
         {type: 'date', dateFormat: 'DD/MM/YYYY', correctFormat: true},
-        {type: 'numeric', format: '0.00'},
+        {type: 'numeric', format: '0.00', renderer: adjRenderer},
         {type: 'numeric', format: '0.00'},
         {type: 'numeric', format: '0.00'}
         ]
     });
+    
+    // Disabling right click on the grid, and double left click shouldnt go to edit mode
+    $("#hot").bind("contextmenu", function(e) { return false; });
+    hot.view.wt.update("onCellDblClick", function() {});
 });
