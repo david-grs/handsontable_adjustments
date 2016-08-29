@@ -47,7 +47,7 @@ $(document).ready(function ()
         }
     };
 
-    var hot = new Handsontable(document.getElementById("hot"), {
+    var hot = new Handsontable(document.getElementById("hot_renderer"), {
         data: adjustments,
         colHeaders: cols,
         rowHeaders: true,
@@ -65,6 +65,6 @@ $(document).ready(function ()
     });
     
     // Disabling right click on the grid, and double left click shouldnt go to edit mode
-    $("#hot").bind("contextmenu", function(e) { return false; });
+    $("#hot_renderer").bind("contextmenu", function(e) { return false; });
     hot.view.wt.update("onCellDblClick", function() {});
 });
