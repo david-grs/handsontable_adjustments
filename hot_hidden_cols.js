@@ -28,24 +28,40 @@ $(document).ready(function ()
     };
     
     
-    var showCols = [true, true, true, true];
+    var showCols = [true, false, true, true];
     var cols = ["Vol", "Slope", "D2", "D4"];
     var data = [[1.0, 12.212, 2, 3, 4],
                  [1.23, 24.333, 0.33, 2, 4.4],
                  [11.11, 11.990, 20.239, 3.3, 1]];
+    
+    var InitCheckboxes = function()
+    {
+        $("#col_chooser :checkbox").each(function(idx, elem)
+        {
+            var i = parseInt(this.id.substr(4));
+            if (showCols[i])
+                $(this).attr("checked", "checked");
+            else
+                $(this).removeAttr("checked");
+        });
+    };
 
-    var hot2 = new Handsontable(document.getElementById("hot_hidden_cols"), {
+    var hot = new Handsontable(document.getElementById("hot_hidden_cols"), 
+    {
         data: GetData(),
         colHeaders: GetColHeaders(),
         rowHeaders: true,
         contextMenu: false
     });
     
-    $(":checkbox").change(function(event)
+    $("#col_chooser :checkbox").change(function(event)
     {
         var i = parseInt(this.id.substr(4));
         showCols[i] = this.checked;
-        hot2.updateSettings({colHeaders: GetColHeaders()});
-        hot2.loadData(GetData());
+        
+        hot.updateSettings({colHeaders: GetColHeaders()});
+        hot.loadData(GetData());
     });
+    
+    InitCheckboxes();
 });
