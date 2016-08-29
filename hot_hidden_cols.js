@@ -36,15 +36,13 @@ $(document).ready(function ()
     
     var InitCheckboxes = function()
     {
-        $("#col_chooser :checkbox").each(function(idx, elem)
-        {
-            var i = parseInt(this.id.substr(4));
+        for (var i = 0; i < showCols.length; ++i)
             if (showCols[i])
-                $(this).attr("checked", "checked");
-            else
-                $(this).removeAttr("checked");
-        });
+                $("#col_" + i).addClass("active");
+
     };
+    
+    InitCheckboxes();
 
     var hot = new Handsontable(document.getElementById("hot_hidden_cols"), 
     {
@@ -54,14 +52,14 @@ $(document).ready(function ()
         contextMenu: false
     });
     
-    $("#col_chooser :checkbox").change(function(event)
+    $("#col_chooser label").click(function(event)
     {
         var i = parseInt(this.id.substr(4));
-        showCols[i] = this.checked;
+        showCols[i] = !showCols[i];
         
         hot.updateSettings({colHeaders: GetColHeaders()});
         hot.loadData(GetData());
+        
+        $(this).removeClass("focus");
     });
-    
-    InitCheckboxes();
 });
