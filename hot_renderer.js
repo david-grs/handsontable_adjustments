@@ -56,11 +56,11 @@ $(document).ready(function ()
         contextMenu: false,
         afterOnCellMouseDown: function(event, coords, TD) { if (coords.row >= 0 && coords.col >= 0) onAdjustment(event, coords.row, coords.col) },
         columns: [
-        {type: 'numeric', format: '$0,0.00'},
+        {type: 'numeric', format: '$0,0.00', renderer: adjRenderer},
         {type: 'date', dateFormat: 'DD/MM/YYYY', correctFormat: true},
         {type: 'numeric', format: '0.00', renderer: adjRenderer},
-        {type: 'numeric', format: '0.00'},
-        {type: 'numeric', format: '0.00'}
+        {type: 'numeric', format: '0.00', renderer: adjRenderer},
+        {type: 'numeric', format: '0.00', renderer: adjRenderer}
         ]
     });
     
